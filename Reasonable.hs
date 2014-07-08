@@ -46,5 +46,4 @@ interactIO (Tell msg next) = do
   return $ next
 
 runInteract' :: Free Interact a -> IO a
-runInteract' (Free i) = interactIO i >>= runInteract'
-runInteract' (Pure a) = return a
+runInteract' = retract . hoistFree interactIO
