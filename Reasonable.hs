@@ -1,3 +1,4 @@
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE DeriveFunctor #-}
 -- | 
 
@@ -44,6 +45,9 @@ interactIO (Ask prompt fnext) = do
 interactIO (Tell msg next) = do
   putStrLn msg
   return $ next
-
+  
+interpret :: (Functor m, Monad m) => (forall x. f x -> m x) -> Free f a -> m a
+interpret f = retract . hoistFree f
+  
 runInteract' :: Free Interact a -> IO a
-runInteract' = retract . hoistFree interactIO
+runInteract' = interpret interactIO
